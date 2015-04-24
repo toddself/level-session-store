@@ -1,0 +1,36 @@
+{
+  "name": "level-session-store",
+  "version": "1.0.0",
+  "description": "A session store for express-session using leveldb",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scriptollc/level-session-store"
+  },
+  "keywords": [
+    "express",
+    "session",
+    "express-session",
+    "connect",
+    "connect-session",
+    "level-session",
+    "store"
+  ],
+  "author": "Todd Kennedy <todd@selfassembled.org>",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/scriptollc/level-session-store/issues"
+  },
+  "homepage": "https://github.com/scriptollc/level-session-store",
+  "dependencies": {
+    "level-sublevel": "~6.4.6"
+  },
+  "devDependencies": {
+    "express-session": "~1.11.1",
+    "level": "~0.18.0",
+    "tap": "~0.7.1"
+  }
+}
