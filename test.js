@@ -1,12 +1,12 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var test = require('tap').test;
 var express = require('express');
 var session = require('express-session');
-var Store = require('./');
+var rimraf = require('rimraf');
+var Store = require('./')(session);
 
 test('it stores session', function(t) {
   var app = express();
@@ -18,7 +18,8 @@ test('it stores session', function(t) {
     resave: true,
     saveUninitialized: true
   });
-  app.use(mw)
+
+  var server = app.use(mw)
   .get('/', function(req, res) {
     res.send('ok');
   })
@@ -26,9 +27,9 @@ test('it stores session', function(t) {
 
   request.get('/', {jar: true}, function(err, res, body) {
     console.log(err);
-    console.log(res.headers);
     console.log(body);
-    fs.unlinkSync(path.join(__dirname, 'level-session-store'));
+    rimraf.sync(path.join(__dirname, 'level-session-store'));
+    server.close();
     t.end();
   });
 });
