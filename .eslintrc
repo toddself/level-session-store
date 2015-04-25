@@ -1,0 +1,49 @@
+{
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "blockBindings": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "modules": true,
+    "templateStrings": true,
+    "jsx": true,
+    "forOf": true,
+    "generators": true
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-shadow": false,
+    "handle-callback-err": false,
+    "camelcase": false,
+    "comma-dangle": "never",
+    "no-cond-assign": "always",
+    "no-constant-condition": true,
+    "no-control-regex": true,
+    "no-dupe-keys": true,
+    "no-dupe-args": true,
+    "no-ex-assign": true,
+    "no-inner-declarations": "both",
+    "no-obj-calls": true,
+    "no-unreachable": true,
+    "block-scoped-var": true,
+    "curly": true,
+    "default-case": true,
+    "dot-notation": true,
+    "eqeqeq": true,
+    "no-caller": true,
+    "no-extend-native": true,
+    "no-loop-func": true,
+    "no-native-reassign": true,
+    "no-new": true,
+    "no-redeclare": true,
+    "radix": true,
+    "no-width": true,
+    "no-extra-strict": true,
+    "quotes": "single",
+    "no-underscore-dangle": false,
+    "no-unused-expressions": false
+  }
+}
