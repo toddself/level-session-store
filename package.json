@@ -29,12 +29,15 @@
     "express": "~4.12.3",
     "express-session": "~1.11.1",
     "level": "~0.18.0",
-    "request": "~2.55.0",
+    "request": "~2.51.0",
     "rimraf": "~2.3.2",
-    "tap": "~0.7.1"
+    "tap": "~0.7.1",
+    "tough-cookie": "~0.13.0"
+  },
+  "peerDependencies": {
+    "level": "~0.18"
   },
   "dependencies": {
-    "request": "~2.51.0",
-    "tough-cookie": "~0.13.0"
+    "json-stringify-safe": "~5.0.0"
   }
 }

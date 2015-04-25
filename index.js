@@ -1,6 +1,8 @@
 'use strict';
 
 var util = require('util');
+var stringify = require('json-stringify-safe');
+var lengthKey = '__length__';
 
 module.exports = function(session) {
   var Store = session.Store;
@@ -9,7 +11,6 @@ module.exports = function(session) {
     db = db || 'level-session-store';
     opts = opts || {};
     Store.call(this, opts);
-    this._length = 0;
     this.mungeKey = false;
     this.storeName = opts.ns || '_session';
 
@@ -25,18 +26,22 @@ module.exports = function(session) {
 
   LevelSessionStore.prototype._createDB = function(name, opts) {
     opts = opts || {};
-
-    if (!opts.valueEncoding) {
-      opts.valueEncoding = 'json';
-    }
+    var self = this;
 
     try {
       var level = require('level');
     } catch (err) {
       throw new Error('If you are not passing in an existing level instance, you must have the package level installed');
     }
-    this.db = level(name, opts);
-    this.emit('connect');
+
+    this.db = level(name, opts, function(err, db) {
+      var key = self.getKey(lengthKey);
+      db.get(key, function(err, length) {
+        length = parseInt(length, 10) || 0;
+        db.put(key, length);
+        self.emit('connect');
+      });
+    });
   };
 
   LevelSessionStore.prototype.getKey = function(key) {
@@ -47,39 +52,47 @@ module.exports = function(session) {
   };
 
   LevelSessionStore.prototype.get = function(sid, cb){
-    this.db.get(this.getKey(sid), cb);
+    this.db.get(this.getKey(sid), function(err, sess) {
+      cb(err, JSON.parse(sess));
+    });
   };
 
   LevelSessionStore.prototype.set = function(sid, session, cb){
     var self = this;
-    this.db.put(this.getKey(sid), session, function(err) {
-      if (err) {
-        return cb && cb(err);
-      }
-      ++self._length;
-      cb && cb();
+    session = stringify(session);
+    this.db.get(this.getKey(lengthKey), function(err, len) {
+      len = parseInt(len, 10) || 0;
+      var ops = [
+        {type: 'put', key: self.getKey(sid), value: session},
+        {type: 'put', key: self.getKey(lengthKey), value: ++len}
+      ];
+      self.db.batch(ops, cb);
     });
   };
 
   LevelSessionStore.prototype.destroy = function(sid, cb){
     var self = this;
-    this.db.del(this.getKey(sid), function(err) {
-      if (err) {
-        return cb && cb(err);
-      }
-      --self._length;
-      cb && cb();
+    this.db.get(this.getKey(lengthKey), function(err, len) {
+      len = parseInt(len, 10) || 0;
+      var ops = [
+        {type: 'del', key: self.getKey(sid), value: session},
+        {type: 'put', key: self.getKey(lengthKey), value: --len}
+      ];
+      self.db.batch(ops, cb);
     });
   };
 
   LevelSessionStore.prototype.touch = function(sid, session, cb){
+    session = stringify(session);
     this.db.put(this.getKey(sid), session, function(err) {
       cb && cb(err);
     });
   };
 
   LevelSessionStore.prototype.length = function(cb){
-    cb && cb(this.length);
+    this.db.get(this.getKey(lengthKey), function(err, len) {
+      return cb(err, parseInt(len, 10) || 0);
+    });
   };
 
   LevelSessionStore.prototype.clear = function(cb){
@@ -102,7 +115,10 @@ module.exports = function(session) {
         }
       })
       .on('end', function() {
-        done();
+        self.db.put(self.getKey(lengthKey), 0, function() {
+          streamDone = true;
+          done();
+        });
       });
   };
 
