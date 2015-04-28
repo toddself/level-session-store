@@ -52,8 +52,21 @@ module.exports = function(session) {
   };
 
   LevelSessionStore.prototype.get = function(sid, cb){
-    this.db.get(this.getKey(sid), function(err, sess) {
-      cb(err, JSON.parse(sess));
+    this.db.get(this.getKey(sid), function(err, data) {
+      if (err && err.type !== 'NotFoundError') {
+        return cb(err);
+      }
+      var session;
+
+      if (data) {
+        try {
+          session = JSON.parse(data);
+        } catch (err) {
+          return cb(err);
+        }
+      }
+
+      cb(null, session);
     });
   };
 
