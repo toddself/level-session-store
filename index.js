@@ -31,7 +31,7 @@ module.exports = function(session) {
     try {
       var level = require('level');
     } catch (err) {
-      throw new Error('If you are not passing in an existing level instance, you must have the package level installed');
+      throw new Error('If you are not passing in an existing level instance, you must have the package level installed. ' + err.message);
     }
 
     this.db = level(name, opts, function(err, db) {
