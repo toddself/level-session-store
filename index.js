@@ -35,6 +35,10 @@ module.exports = function(session) {
     }
 
     this.db = level(name, opts, function(err, db) {
+      if (err) {
+        throw err;
+      }
+
       var key = self.getKey(lengthKey);
       db.get(key, function(err, length) {
         length = parseInt(length, 10) || 0;
