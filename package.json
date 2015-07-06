@@ -20,7 +20,7 @@
     "store"
   ],
   "author": "Todd Kennedy <todd@selfassembled.org>",
-  "license": "Apache 2",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/scriptollc/level-session-store/issues"
   },

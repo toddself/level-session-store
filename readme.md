@@ -1,4 +1,4 @@
-[![build status](https://secure.travis-ci.org/scriptollc/level-session-store.png)](http://travis-ci.org/scriptollc/level-session-store)
+[![Circle CI](https://circleci.com/gh/scriptoLLC/level-session-store.svg?style=svg)](https://circleci.com/gh/scriptoLLC/level-session-store)
 
 # Level-Session-Store
 A session storage module for [expressjs/session](https://github.com/expressjs/session) that uses [level/level](https://github.com/level/level) to store data.
