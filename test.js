@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs');
 var os = require('os');
 var path = require('path');
 var request = require('request');
@@ -11,14 +12,9 @@ var rimraf = require('rimraf');
 var cookieParser = require('cookie-parser');
 var Store = require('./')(session);
 
-tap.tearDown(function() {
-  rimraf.sync(path.join(os.tmpdir(), 'level-session-store'));
-  rimraf.sync(path.join(os.tmpdir(), 'foo'));
-  server.close();
-});
-
 var app = express();
 var store = new Store(path.join(os.tmpdir(), 'level-session-store'));
+var noPermPath = path.join(os.tmpdir(), 'noperms');
 var mw = session({
   store: store,
   key: 'sid',
@@ -42,7 +38,7 @@ var server = app
     res.send('ok');
   })
   .get('/nuke', function(req, res) {
-    store.destroy(req.cookies.sid, function(err) {
+    store.destroy(req.cookies.sid, function() {
       res.send();
     });
   })
@@ -69,7 +65,7 @@ test('it deletes a session', function(t) {
     var cookieVal = res.headers['set-cookie'][0].split('%3A')[1].split('.')[0];
     var cookie = request.cookie('sid=' + cookieVal);
     jar.setCookie(cookie, 'http://localhost:1234');
-    request({url: 'http://localhost:1234/bye', jar: jar}, function(err) {
+    request({url: 'http://localhost:1234/bye', jar: jar}, function() {
       store.length(function(err, len) {
         t.notOk(!!err, 'no errors');
         t.equal(len, 1, 'there is a session');
@@ -104,4 +100,12 @@ test('deleting the session from the store works', function(t) {
       });
     });
   });
+});
+
+test('teardown', function(t) {
+  rimraf.sync(path.join(os.tmpdir(), 'level-session-store'));
+  rimraf.sync(path.join(os.tmpdir(), 'foo'));
+  rimraf.sync(noPermPath);
+  server.close();
+  t.end();
 });
