@@ -1,6 +1,8 @@
 [![Circle CI](https://circleci.com/gh/scriptoLLC/level-session-store.svg?style=svg)](https://circleci.com/gh/scriptoLLC/level-session-store)
 
 # Level-Session-Store
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/scriptoLLC/level-session-store.svg)](https://greenkeeper.io/)
 A session storage module for [expressjs/session](https://github.com/expressjs/session) that uses [level/level](https://github.com/level/level) to store data.
 
 _Note_: this is different than [rvagg/node-level-session](https://github.com/rvagg/node-level-session) in that it requires express-session to operate. It is merely a backing store.
