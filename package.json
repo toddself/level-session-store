@@ -4,7 +4,8 @@
   "description": "A session store for express-session using leveldb",
   "main": "index.js",
   "scripts": {
-    "test": "tap test.js"
+    "test": "standard && npm run dep && tap test.js",
+    "dep": "dependency-check . && dependency-check . --unused --no-dev"
   },
   "repository": {
     "type": "git",
@@ -26,14 +27,16 @@
   },
   "homepage": "https://github.com/scriptollc/level-session-store",
   "devDependencies": {
-    "cookie-parser": "~1.3.4",
-    "express": "~4.12.3",
-    "express-session": "~1.11.1",
+    "cookie-parser": "~1.4.3",
+    "dependency-check": "^2.9.1",
+    "express": "~4.15.3",
+    "express-session": "~1.15.3",
     "level": "^1.2.0",
-    "request": "~2.51.0",
-    "rimraf": "~2.3.2",
-    "tap": "~1.3.1",
-    "tough-cookie": "~0.13.0"
+    "request": "~2.81.0",
+    "rimraf": "~2.6.1",
+    "standard": "^10.0.2",
+    "tap": "~10.5.1",
+    "tough-cookie": "~2.3.2"
   },
   "peerDependencies": {
     "level": "*"
