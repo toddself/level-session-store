@@ -1,6 +1,6 @@
 {
   "name": "level-session-store",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A session store for express-session using leveldb",
   "main": "index.js",
   "scripts": {
