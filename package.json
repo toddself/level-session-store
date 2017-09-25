@@ -29,7 +29,7 @@
   "devDependencies": {
     "cookie-parser": "~1.4.3",
     "dependency-check": "^2.9.1",
-    "express": "~4.15.3",
+    "express": "~5.0.0-alpha.6",
     "express-session": "~1.15.3",
     "level": "^1.2.0",
     "request": "~2.81.0",
