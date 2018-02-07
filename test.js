@@ -10,7 +10,8 @@ var cookieParser = require('cookie-parser')
 var Store = require('./')(session)
 
 var app = express()
-var store = new Store(path.join(os.tmpdir(), 'level-session-store'))
+var level = require('level')(path.join(os.tmpdir(), 'level-session-store'))
+var store = new Store(level)
 var noPermPath = path.join(os.tmpdir(), 'noperms')
 var mw = session({
   store: store,

@@ -16,6 +16,7 @@ module.exports = function (session) {
       this._createDB(db, opts)
     } else {
       this.mungeKey = true
+      this._initLength(db)
       this.db = db
     }
   }
@@ -37,13 +38,18 @@ module.exports = function (session) {
         throw err
       }
 
-      var key = self.getKey(lengthKey)
-      db.get(key, function (err, length) {
-        if (err && err.type !== 'NotFoundError') return self.emit('error', err)
-        length = parseInt(length, 10) || 0
-        db.put(key, length)
-        self.emit('connect')
-      })
+      self._initLength(db)
+    })
+  }
+
+  LevelSessionStore.prototype._initLength = function (db) {
+    var self = this
+    var key = self.getKey(lengthKey)
+    db.get(key, function (err, length) {
+      if (err && err.type !== 'NotFoundError') return self.emit('error', err)
+      length = parseInt(length, 10) || 0
+      db.put(key, length)
+      self.emit('connect')
     })
   }
 
