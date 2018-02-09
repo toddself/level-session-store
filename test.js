@@ -9,38 +9,49 @@ var rimraf = require('rimraf')
 var cookieParser = require('cookie-parser')
 var Store = require('./')(session)
 
-var app = express()
-var level = require('level')(path.join(os.tmpdir(), 'level-session-store'))
-var store = new Store(level)
+var store = new Store(path.join(os.tmpdir(), 'level-session-store'))
 var noPermPath = path.join(os.tmpdir(), 'noperms')
-var mw = session({
-  store: store,
-  key: 'sid',
-  secret: 'foobar',
-  resave: true,
-  saveUninitialized: true,
-  unset: 'destroy'
-})
 
-var server = app
-  .use(cookieParser())
-  .use(mw)
-  .get('/', function (req, res) {
-    if (typeof req.session === 'undefined') {
-      return res.status(500).send('no')
-    }
-    res.send('ok')
+var level = require('level')(path.join(os.tmpdir(), 'my-session-store'))
+var store2 = new Store(level)
+
+function makeApp (store) {
+  var app = express()
+  var mw = session({
+    store: store,
+    key: 'sid',
+    secret: 'foobar',
+    resave: true,
+    saveUninitialized: true,
+    unset: 'destroy'
   })
-  .get('/bye', function (req, res) {
-    req.session.destroy()
-    res.send('ok')
-  })
-  .get('/nuke', function (req, res) {
-    store.destroy(req.cookies.sid, function () {
-      res.send()
-    })
-  })
-  .listen(1234)
+
+  var server = app
+      .use(cookieParser())
+      .use(mw)
+      .get('/', function (req, res) {
+        if (typeof req.session === 'undefined') {
+          return res.status(500).send('no')
+        }
+        res.send('ok')
+      })
+      .get('/bye', function (req, res) {
+        req.session.destroy()
+        res.send('ok')
+      })
+      .get('/nuke', function (req, res) {
+        store.destroy(req.cookies.sid, function () {
+          res.send()
+        })
+      })
+  return server
+}
+
+var server = makeApp(store)
+    .listen(1234)
+
+var server2 = makeApp(store2)
+    .listen(2468)
 
 test('it stores session', function (t) {
   request.get('http://localhost:1234/', function (err, res) {
@@ -100,10 +111,42 @@ test('deleting the session from the store works', function (t) {
   })
 })
 
+test('it stores session in an existing level instance', function (t) {
+  request.get('http://localhost:2468/', function (err, res) {
+    t.notOk(!!err, 'no errors')
+    t.ok(res.headers['set-cookie'], 'setting a cookie')
+    store2.length(function (err, len) {
+      t.notOk(!!err, 'no errors')
+      t.equal(len, 1, 'there is a session')
+      t.end()
+    })
+  })
+})
+
+test('it deletes a session from an existing level instance', function (t) {
+  request.get('http://localhost:2468/', function (err, res) {
+    t.notOk(!!err, 'no errors')
+    t.ok(res.headers['set-cookie'], 'setting a cookie')
+    var jar = request.jar()
+    var cookieVal = res.headers['set-cookie'][0].split('%3A')[1].split('.')[0]
+    var cookie = request.cookie('sid=' + cookieVal)
+    jar.setCookie(cookie, 'http://localhost:2468')
+    request({url: 'http://localhost:2468/bye', jar: jar}, function () {
+      store2.length(function (err, len) {
+        t.notOk(!!err, 'no errors')
+        t.equal(len, 1, 'there is a session')
+        t.end()
+      })
+    })
+  })
+})
+
 test('teardown', function (t) {
   rimraf.sync(path.join(os.tmpdir(), 'level-session-store'))
+  rimraf.sync(path.join(os.tmpdir(), 'my-session-store'))
   rimraf.sync(path.join(os.tmpdir(), 'foo'))
   rimraf.sync(noPermPath)
   server.close()
+  server2.close()
   t.end()
 })
