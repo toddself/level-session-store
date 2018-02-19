@@ -34,7 +34,7 @@
     "level": "^1.2.0",
     "request": "^2.81.0",
     "rimraf": "^2.6.1",
-    "standard": "^10.0.2",
+    "standard": "^11.0.0",
     "tap": "^10.7.0",
     "tough-cookie": "^2.3.2"
   },
