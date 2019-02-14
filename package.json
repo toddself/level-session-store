@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/scriptollc/level-session-store"
+    "url": "https://github.com/toddself/level-session-store"
   },
   "keywords": [
     "express",
@@ -23,25 +23,25 @@
   "author": "Todd Kennedy <todd@selfassembled.org>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/scriptollc/level-session-store/issues"
+    "url": "https://github.com/toddself/level-session-store/issues"
   },
-  "homepage": "https://github.com/scriptollc/level-session-store",
+  "homepage": "https://github.com/toddself/level-session-store",
   "devDependencies": {
     "cookie-parser": "^1.4.3",
     "dependency-check": "^2.9.1",
-    "express": "^4.15.3",
-    "express-session": "^1.15.3",
-    "level": "^1.2.0",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "level": "^4.0.0",
     "request": "^2.81.0",
     "rimraf": "^2.6.1",
     "standard": "^10.0.2",
-    "tap": "^10.7.0",
-    "tough-cookie": "^2.3.2"
+    "tap": "^12.5.2",
+    "tough-cookie": "^3.0.1"
   },
   "peerDependencies": {
     "level": "*"
   },
   "dependencies": {
-    "json-stringify-safe": "^5.0.0"
+    "json-stringify-safe": "^5.0.1"
   }
 }
